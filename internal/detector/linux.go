@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func FindPID(name string) (string, error) {
+func FindPID(binaryName string) (string, error) {
 	files, err := filepath.Glob("/proc/*/exe")
 	if err != nil {
 		return "", err
@@ -22,7 +22,7 @@ func FindPID(name string) (string, error) {
 			continue
 		}
 
-		if file == name {
+		if file == binaryName {
 			return files[i][6 : len(files[i])-4], nil
 		}
 	}

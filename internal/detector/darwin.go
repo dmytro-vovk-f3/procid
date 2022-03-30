@@ -8,19 +8,20 @@ package detector
 */
 import "C"
 import (
-	"github.com/mitchellh/go-ps"
 	"path/filepath"
 	"strconv"
 	"unsafe"
+
+	"github.com/mitchellh/go-ps"
 )
 
-func FindPID(name string) (string, error) {
+func FindPID(binaryName string) (string, error) {
 	processes, err := ps.Processes()
 	if err != nil {
 		return "", nil
 	}
 
-	baseName := filepath.Base(name)
+	baseName := filepath.Base(binaryName)
 	buf := C.malloc(C.PROC_PIDPATHINFO_MAXSIZE)
 	defer C.free(unsafe.Pointer(buf))
 
@@ -35,7 +36,7 @@ func FindPID(name string) (string, error) {
 		}
 
 		binaryFullName := string(C.GoBytes(unsafe.Pointer(buf), ret))
-		if binaryFullName == name {
+		if binaryFullName == binaryName {
 			return strconv.Itoa(processes[i].Pid()), nil
 		}
 	}
